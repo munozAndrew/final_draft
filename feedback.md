@@ -53,3 +53,17 @@ Three additions were made in `final_analysis.py`:
 **LINE diagnostics (Fig 4):** `fig4_ols_diagnostics()` produces a 2×2 panel: residuals vs fitted, QQ plot, scale-location, and residual histogram. The diagnostics show what is expected given the data. Brier scores are bounded at 0 and right-skewed, so residuals are non-normal and variance is heteroscedastic. This is discussed directly in the writeup. With n = 114,127, the t-statistics are reliable by the CLT despite non-normal residuals.
 
 **Cook's distance (Fig 5):** `fig5_category_diagnostics()` computes Cook's distance and standardized residuals for the category-level bivariate OLS. The individual market model has over 100,000 observations where Cook's distance would be negligible for all points, so this diagnostic is more meaningful at the category level where the sample size is only dozens of rows.
+
+> "To further validate your conclusion a p-value and slope would be good to show the strength of association."
+
+The slope (β = 0.0024 per word) and p-value (p = 0.087) for the category level OLS in Figure 3 are now labeled explicitly in the legend. The multivariate model slope (β = 0.00111, p < 0.001) is shown in the results table. The writeup is clear that slope is not significant at α = 0.05.
+
+> "Entertainment/Awards has the shortest average word length (11 words) but the second largest mean brier score. In the writeup you state it has an average of 12.8 words. Could be an old graph?"
+
+The figure from the draft run showed 11 words for E/A, but the text said 12.8. The text was using a stale number from an earlier run. The new `final_analysis.py` computes both figures and text numbers from the same run, so they are now consistent. E/A's actual average is **11.0 words** (Brier ≈ 0.042), and the writeup now uses this number. The E/A anomaly (short questions, bad accuracy) is now discussed explicitly as a domain level exception to the hypothesis.
+
+> "Looking at the sample size for each word count group, n should be equal if these are quintiles, but n varies a lot between groups."
+
+This is explained in the Results section and in a code comment in `brier_by_bucket()`. `pd.qcut` targets equal frequency bins, but when many markets share the same word count (ties at a percentile boundary), it has to merge bins to avoid creating empty groups. The result is unequal n per bucket. This is expected behavior, not a data error. The figure labels now show the actual word count range and n for each bucket so readers can see this directly.
+
+---
